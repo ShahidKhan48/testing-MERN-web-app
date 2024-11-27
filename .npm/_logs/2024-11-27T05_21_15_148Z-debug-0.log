@@ -1,0 +1,18 @@
+0 verbose cli /usr/bin/node /usr/bin/npm
+1 info using npm@10.8.2
+2 info using node@v18.20.5
+3 silly config load:file:/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/root/frontend/.npmrc
+5 silly config load:file:/root/.npmrc
+6 silly config load:file:/root/.npm-global/etc/npmrc
+7 verbose title npm config list
+8 verbose argv "config" "list"
+9 verbose logfile logs-max:10 dir:/root/.npm/_logs/2024-11-27T05_21_15_148Z-
+10 verbose logfile /root/.npm/_logs/2024-11-27T05_21_15_148Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd /root/frontend
+13 verbose os Linux 6.1.115-126.197.amzn2023.x86_64
+14 verbose node v18.20.5
+15 verbose npm  v10.8.2
+16 verbose exit 0
+17 info ok
