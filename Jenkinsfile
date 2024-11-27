@@ -14,26 +14,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                // Install Node.js and NPM dependencies for both frontend and backend
-                script {
-                    // Ensure npm is up to date
-                    sh 'npm install -g npm@latest'
-                    
-                    // Install frontend dependencies
-                    dir('frontend') {
-                        sh 'npm install'  // Install React app dependencies
-                    }
-                    
-                    // Install backend dependencies
-                    dir('backend') {
-                        sh 'npm install'  // Install Node.js/Express dependencies
-                    }
-                }
-            }
-        }
-
         stage('Build Frontend') {
             steps {
                 // Build the React app
