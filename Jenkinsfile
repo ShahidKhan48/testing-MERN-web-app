@@ -18,10 +18,15 @@ pipeline {
             steps {
                 // Install Node.js and NPM dependencies for both frontend and backend
                 script {
-                    sh 'npm install -g npm@latest'  // Update npm to latest version
+                    // Ensure npm is up to date
+                    sh 'npm install -g npm@latest'
+                    
+                    // Install frontend dependencies
                     dir('frontend') {
                         sh 'npm install'  // Install React app dependencies
                     }
+                    
+                    // Install backend dependencies
                     dir('backend') {
                         sh 'npm install'  // Install Node.js/Express dependencies
                     }
@@ -52,6 +57,7 @@ pipeline {
             steps {
                 // Copy built frontend files to NGINX server
                 script {
+                    // Assuming your NGINX is installed and configured to serve the files from this path
                     sh 'sudo cp -r frontend/build/* /usr/share/nginx/html/'  // Adjust path as per your NGINX config
                     sh 'sudo systemctl restart nginx'  // Restart NGINX to apply changes
                 }
