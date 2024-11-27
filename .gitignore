@@ -1,0 +1,17 @@
+
+# Ignore system files
+.bash_history
+.bash_logout
+.bash_profile
+.bashrc
+.cshrc
+.gitconfig
+.lesshst
+.npm/
+.npm-global/
+.npmrc
+.ssh/
+.tcshrc
+.viminfo
+.docker/
+
