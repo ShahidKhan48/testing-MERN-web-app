@@ -2,60 +2,48 @@ pipeline {
     agent any
 
     environment {
-        // Set the necessary environment variables
-        DOCKER_COMPOSE_VERSION = '1.29.2'
+        DOCKER_COMPOSE_VERSION = '1.29.2' // Adjust to the version you want
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Install Dependencies') {
             steps {
-                // Checkout code from GitHub
-                git branch: 'main', url: 'https://github.com/ShahidKhan48/testing-MERN-web-app.git'
+                script {
+                    // Ensure Docker Compose is installed
+                    sh '''
+                    if ! command -v docker-compose &> /dev/null
+                    then
+                        echo "docker-compose not found, installing..."
+                        sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                        sudo chmod +x /usr/local/bin/docker-compose
+                    fi
+                    '''
+                }
             }
         }
-
-     
         stage('Build Docker Images') {
             steps {
                 script {
-                    // Build frontend, backend, and nginx images using Docker Compose
+                    // Build the Docker images using docker-compose
                     sh 'docker-compose build'
                 }
             }
         }
-
         stage('Run Docker Compose') {
             steps {
                 script {
-                    // Start the containers using Docker Compose
+                    // Run the Docker Compose containers
                     sh 'docker-compose up -d'
                 }
             }
         }
-
         stage('Verify Deployment') {
             steps {
                 script {
-                    // Verify if the containers are running correctly
+                    // Verify that containers are running
                     sh 'docker ps'
                 }
             }
-        }
-
-        stage('Post Deployment Cleanup') {
-            steps {
-                script {
-                    // Stop and remove containers after verification
-                    sh 'docker-compose down'
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            // Clean up resources or send notifications
-            echo 'Pipeline execution finished.'
         }
     }
 }
