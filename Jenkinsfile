@@ -1,9 +1,9 @@
 pipeline {
     agent any
-    
+
     environment {
-        // Define environment variables if necessary
-        NODE_ENV = 'production'
+        // Set the necessary environment variables
+        DOCKER_COMPOSE_VERSION = '1.29.2'
     }
 
     stages {
@@ -14,32 +14,50 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
+        stage('Install Dependencies') {
             steps {
-                // Build the React app
-                dir('frontend') {
-                    sh 'npm run build'  // Build React app
-                }
-            }
-        }
-
-        stage('Build Backend') {
-            steps {
-                // Build or start the backend (Node.js/Express)
-                dir('backend') {
-                    sh 'npm run build'  // Optional: if you have a build script for the backend
-                    sh 'npm start &'  // Start the backend server
-                }
-            }
-        }
-
-        stage('Deploy to NGINX') {
-            steps {
-                // Copy built frontend files to NGINX server
                 script {
-                    // Assuming your NGINX is installed and configured to serve the files from this path
-                    sh 'sudo cp -r frontend/build/* /usr/share/nginx/html/'  // Adjust path as per your NGINX config
-                    sh 'sudo systemctl restart nginx'  // Restart NGINX to apply changes
+                    // Ensure Docker and Docker Compose are installed
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install -y docker.io'
+                    sh 'sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
+                    sh 'sudo chmod +x /usr/local/bin/docker-compose'
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    // Build frontend, backend, and nginx images using Docker Compose
+                    sh 'docker-compose build'
+                }
+            }
+        }
+
+        stage('Run Docker Compose') {
+            steps {
+                script {
+                    // Start the containers using Docker Compose
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                script {
+                    // Verify if the containers are running correctly
+                    sh 'docker ps'
+                }
+            }
+        }
+
+        stage('Post Deployment Cleanup') {
+            steps {
+                script {
+                    // Stop and remove containers after verification
+                    sh 'docker-compose down'
                 }
             }
         }
@@ -47,8 +65,8 @@ pipeline {
 
     post {
         always {
-            // Clean up or notify after the build
-            echo 'Build completed'
+            // Clean up resources or send notifications
+            echo 'Pipeline execution finished.'
         }
     }
 }
