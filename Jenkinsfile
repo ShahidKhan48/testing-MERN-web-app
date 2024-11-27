@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Checkout code from GitHub
-                git 'https://github.com/ShahidKhan48/testing-MERN-web-app.git'
+                git branch: 'main', url: 'https://github.com/ShahidKhan48/testing-MERN-web-app.git'
             }
         }
 
